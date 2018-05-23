@@ -1,5 +1,7 @@
 
 
+'use strict'
+
 
 const dbConfig = require('./config');
 const knex = require('knex')(dbConfig);

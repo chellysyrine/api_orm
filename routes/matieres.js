@@ -2,7 +2,9 @@ var express = require('express');
 var router = express.Router();
 const bookshelf = require('../config/bookshelf-instance');
 const securityConfig = require('../config/security-config');
-var Matiere=require('../models/matiere')
+var Matiere=require('../models/matiere');
+var Unite=require('../models/unite')
+
 
 var Matieres = bookshelf.Collection.extend({
   model: Matiere
@@ -14,8 +16,37 @@ router.route('/')
       Matieres.forge()
     .fetch()
     .then(function (collection) {
-      res.json({error: false, data: collection.toJSON()});
-      console.log(true)
+      var result = [];
+        var counter = 0;
+        collection.toJSON().forEach((element, idx) => {
+          result.push(element);
+          Unite.forge({id: element.id_unite})
+          .fetch()
+          .then(function (unite) {
+            if (!unite) {
+              result[idx].unite = {}
+                       counter = counter + 1;
+            }
+            else {
+              result[idx].unite = unite.toJSON();
+                     console.log(result);
+                     counter = counter + 1;
+            
+                    }
+                    if (counter === collection.toJSON().length) {
+                      res.json({
+                        error: false,
+                        data: result
+                      });
+                     }
+                    })
+          
+          .catch(function (err) {
+            res.status(500).json({error: true, data: {message: err.message}});
+          });
+        
+        })
+
 
     })
     .catch(function (err) {

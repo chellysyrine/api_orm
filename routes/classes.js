@@ -2,7 +2,9 @@ var express = require('express');
 var router = express.Router();
 const bookshelf = require('../config/bookshelf-instance');
 const securityConfig = require('../config/security-config');
-var Classe=require('../models/classe')
+var Classe=require('../models/classe');
+var Niveau=require('../models/niveau')
+
 
 var Classes = bookshelf.Collection.extend({
   model: Classe
@@ -14,8 +16,36 @@ router.route('/')
       Classes.forge()
     .fetch()
     .then(function (collection) {
-      res.json({error: false, data: collection.toJSON()});
-      console.log(true)
+      var result = [];
+        var counter = 0;
+        collection.toJSON().forEach((element, idx) => {
+          result.push(element);
+          Niveau.forge({id: element.id_niveau})
+          .fetch()
+          .then(function (niveau) {
+            if (!niveau) {
+              result[idx].niveau = {}
+                       counter = counter + 1;
+            }
+            else {
+              result[idx].niveau = niveau.toJSON();
+                     console.log(result);
+                     counter = counter + 1;
+            
+                    }
+                    if (counter === collection.toJSON().length) {
+                      res.json({
+                        error: false,
+                        data: result
+                      });
+                     }
+                    })
+          
+          .catch(function (err) {
+            res.status(500).json({error: true, data: {message: err.message}});
+          });
+        
+        })
 
     })
     .catch(function (err) {

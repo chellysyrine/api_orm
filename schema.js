@@ -8,7 +8,7 @@ var Schema ={
     date_naissance:{ type :'date'},
     username:{type :'string', maxlength: 150, nullable: false},
     password:{type : 'string' , maxlength : 150, nullable : false},
-    id_classe:{type : 'integer', nullable : false, unseigned :true}
+    id_classe:{type : 'integer', nullable : true, unseigned :true}
  },
 admin:{
     id: {type: 'increments', nullable: false, primary: true},
@@ -109,13 +109,22 @@ actualites:{
     titre:{type:'string'},
     description:{type:'string'},
     date:{type:'date'},
-    id_admin:{type :'integer', unseigned:true}
+    id_admin:{type :'integer', unseigned:true},
+    actImage:{type:'string'}
 },
 annee:{
     id: {type: 'increments', nullable: false, primary: true},
     description:{type:'string'},
     date_debut:{type : 'date' },
     date_fin :{type :'date'},
+},
+
+noteinfo:{
+    id: {type: 'increments', nullable: false, primary: true},
+    titre:{type:'string'},
+    description:{type:'string'},
+    date:{type:'date'},
+
 }
  };
  module.exports = Schema;
